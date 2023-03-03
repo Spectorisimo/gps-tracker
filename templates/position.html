@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}
+Position
+{% endblock %}
+{% block header %}
+
+<script src="https://maps.api.2gis.ru/2.0/loader.js?pkg=full"></script>
+
+
+
+
+{% endblock %}
+{% block content %}
+
+<div id="map" style="width:100%; height:100vh;margin:0 auto;display:flex;justify-content: center;align-items:center"></div>
+
+
+<script type="text/javascript">
+    function convert(x) {
+    var floatValue = +(x);
+    return floatValue;
+}
+
+    var map;
+    latitude = convert({{latitude}});
+    longitude = convert({{longitude}});
+
+    DG.then(function () {
+        map = DG.map('map', {
+            center: [latitude, longitude],
+            zoom: 20
+        });
+
+        DG.marker([latitude, longitude]).addTo(map);
+    });
+
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %} Teltonika {% endblock %}
+
+{% block content %}
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Дата</th>
+        <th scope="col">Долгота</th>
+        <th scope="col">Широта</th>
+        <th scope="col">Высота</th>
+        <th scope="col">Скорость</th>
+        <th scope="col">Спутники</th>
+        <th scope="col">Гео-позиция</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    {% for d in page_obj %}
+    <tr>
+        <th scope="row">{{ d.id }}</th>
+        <td>{{ d.date }}</td>
+        <td>{{ d.longitude }}</td>
+        <td>{{ d.latitude }}</td>
+        <td>{{ d.altitude }}</td>
+        <td>{{ d.speed }}</td>
+        <td>{{ d.sattelites }}</td>
+        <td><a class="btn btn-primary" href="{{d.id}}" role="button">Показать на карте</a></td>
+    </tr>
+    {% endfor %}
+
+</table>
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+{% if page_obj.has_previous %}
+
+
+
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" tabindex="-1">« Предыдущая</a>
+        </li>
+
+        {% if page_obj.number > 3 %}
+        <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+        {% if page_obj.number > 4 %}
+        <li class="page-item disabled">
+            <a class="page-link">...</a>
+        </li>
+        {% endif %}
+        {% endif %}
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+        <li class="page-item active"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+        {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        {% if page_obj.number < page_obj.paginator.num_pages|add:'-3' %}
+        <li class="page-item disabled">
+            <a class="page-link">...</a>
+        </li>
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
+            {{ page_obj.paginator.num_pages }}</a></li>
+        {% elif page_obj.number < page_obj.paginator.num_pages|add:'-2' %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
+            {{ page_obj.paginator.num_pages }}</a></li>
+        {% endif %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Следующая »</a>
+        </li>
+
+
+
+{% endif %}
+    </ul>
+</nav>
+{% endblock %}
