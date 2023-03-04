@@ -44,20 +44,20 @@ def decodethis(data):
             record = int(data[19:20], 16)
             timestamp = int(data[20:36], 16)
             priority = int(data[36:38], 16)
-            lon = str(int(data[38:46], 16))
-            lat = str(int(data[46:54], 16))
+            lon = int(data[38:46], 16)
+            lat = int(data[46:54], 16)
             alt = int(data[54:58], 16)
             angle = int(data[58:62], 16)
             sats = int(data[62:64], 16)
             speed = int(data[64:68], 16)
 
             db = DatabaseRepository()
-            timestamp = str(timestamp)[:10]
+            timestamp = int(str(timestamp)[:10])
             date = datetime.datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
-            latitude = lat[:2] + '.' + lat[2:]
-            longitude = lon[:2] + '.' + lon[2:]
-            data = (date, latitude, longitude, alt, sats, speed)
-            db.add_data(data)
+            latitude = str(lat)[:2] + '.' + str(lat)[2:]
+            longitude = str(lon)[:2] + '.' + str(lon)[2:]
+            gps_data = (date, latitude, longitude, alt, sats, speed)
+            db.add_data(gps_data)
 
             logging.info("Received data: Record: %s, Timestamp: %s, Lat,Lon: %s, %s, Altitude: %s, Sats: %s, Speed: %s",
                 record, timestamp, lat, lon, alt, sats, speed)

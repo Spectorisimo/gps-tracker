@@ -6,7 +6,7 @@ gpsdata_services = services.GPSDataServicesV1()
 
 
 def get_gps_data(request):
-    data = gpsdata_services.get_all_data()
+    data = gpsdata_services.get_all_data()[::-1]
     page_num = request.GET.get('page', 1)
     paginator = Paginator(data, 20)
     try:
@@ -26,4 +26,13 @@ def get_single_gps_data(request, pk):
     return render(request, 'position.html', context={
         'latitude': data.latitude,
         'longitude': data.longitude,
+    })
+
+
+def get_current_position(request):
+    data = gpsdata_services.get_all_data().last()
+
+    return render(request,'current_position.html',context={
+        'latitude':str(data.latitude),
+        'longitude':str(data.longitude),
     })

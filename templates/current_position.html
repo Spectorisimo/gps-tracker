@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}
+Текущее местоположение
+{% endblock %}
+{% block header %}
+
+<script src="https://maps.api.2gis.ru/2.0/loader.js?pkg=full"></script>
+
+{% endblock %}
+{% block content %}
+<div id="map" style="width:100%; height:100vh;margin:0 auto;display:flex;justify-content: center;align-items:center"></div>
+
+
+    <script type="text/javascript">
+      DG.then(function () {
+          const old_latitude = parseFloat({{latitude}});
+          const old_longitude = parseFloat({{longitude}});
+        var map = DG.map('map', {
+            center: [old_latitude, old_longitude],
+            zoom: 20
+        });
+
+        var marker = DG.marker([old_latitude, old_longitude]).addTo(map);
+
+        // Подключаемся к вебсокету
+        const socket = new WebSocket('ws://5.188.155.41:8000/map/');
+        // Обработчик события получения данных из вебсокета
+        socket.onmessage = function(event) {
+          // Получаем данные из вебсокета
+          const data = JSON.parse(event.data);
+          // Конвертируем строки в числа
+          const latitude = parseFloat(data.latitude);
+          const longitude = parseFloat(data.longitude);
+          // Обновляем центр карты и перемещаем маркер
+          map.setView([latitude, longitude]);
+          marker.setLatLng([latitude, longitude]);
+        };
+      });
+    </script>
+{% endblock %}
