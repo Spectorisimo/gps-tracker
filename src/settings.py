@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'channels',
     #apps
     'gps_tracker',
+
 ]
 
 MIDDLEWARE = [

@@ -1,14 +1,13 @@
 from asgiref.sync import async_to_sync
-from django.db.models import signals
+from django.db.models.signals import post_save
 from django.dispatch import receiver
-from . import models
 from channels.layers import get_channel_layer
+from .models import GPSData
 
 channel_layer = get_channel_layer()
 
-
-@receiver(signals.post_save, sender=models.GPSData)
-def new_data_notification(sender, instance: models.GPSData, created: bool, **kwargs):
+@receiver(post_save, sender=GPSData)
+def new_data_notification(sender, instance, created, **kwargs):
     if created:
         coordinates = {
             'latitude': str(instance.latitude),

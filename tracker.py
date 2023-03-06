@@ -1,17 +1,16 @@
+import django
+import os
+from channels.routing import get_default_application
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "src.settings")
+django.setup()
+application = get_default_application()
+
+from gps_tracker import models
 import datetime
-from tracker import database
 import socket
 import binascii
 import logging
-
-class DatabaseRepository():
-    __database = database.Database()
-
-    def add_data(self, data: tuple):
-        self.__database.cursor.execute(
-            f"INSERT INTO gps_tracker_gpsdata(date,latitude,longitude,altitude,sattelites,speed) VALUES{data}")
-        self.__database.connection.commit()
-
 
 
 # Настройки логирования
@@ -51,13 +50,13 @@ def decodethis(data):
             sats = int(data[62:64], 16)
             speed = int(data[64:68], 16)
 
-            db = DatabaseRepository()
             timestamp = int(str(timestamp)[:10])
             date = datetime.datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
             latitude = str(lat)[:2] + '.' + str(lat)[2:]
             longitude = str(lon)[:2] + '.' + str(lon)[2:]
-            gps_data = (date, latitude, longitude, alt, sats, speed)
-            db.add_data(gps_data)
+            gps_data = models.GPSData(date=date, latitude=latitude, longitude=longitude, altitude=alt, sattelites=sats, speed=speed)
+            gps_data.save()
+
 
             logging.info("Received data: Record: %s, Timestamp: %s, Lat,Lon: %s, %s, Altitude: %s, Sats: %s, Speed: %s",
                 record, timestamp, lat, lon, alt, sats, speed)
@@ -118,8 +117,9 @@ def start():
 
 
 
-if __name__ == '__main__':
-    logging.info("Starting server...")
-    start()
+
+logging.info("Starting server...")
+print('Скрипт запущен')
+start()
 
 

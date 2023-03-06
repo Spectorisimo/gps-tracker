@@ -8,7 +8,6 @@ class GPSData(models.Model):
     altitude = models.IntegerField()
     sattelites = models.IntegerField()
     speed = models.IntegerField()
-    created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return f"Запись {self.id}"
 
